@@ -34,6 +34,7 @@ func ParseDirectory(directoryPath string, opts ...ParserOptionFunc) domain.Packa
 		Interfaces: domain.Interfaces{},
 		Classes:    domain.Classes{},
 		Functions:  domain.Functions{},
+		Constrains: domain.Constrains{},
 	}
 	for _, file := range files {
 		fullPath := filepath.Join(directoryPath, file.Name())
@@ -99,6 +100,7 @@ func ParseFile(filePath string) domain.Package {
 		Functions:  domain.Functions{},
 		Constants:  domain.Fields{},
 		Variables:  domain.Fields{},
+		Constrains: domain.Constrains{},
 	}
 
 	if node.Scope != nil {
@@ -133,6 +135,7 @@ func ParseFile(filePath string) domain.Package {
 						name = name + "[" + strings.Join(params, ",") + "]"
 					}
 				}
+
 				switch typeSpec.Type.(type) {
 				case *ast.StructType:
 					structType := typeSpec.Type.(*ast.StructType)
@@ -159,6 +162,12 @@ func ParseFile(filePath string) domain.Package {
 						}
 					}
 
+					if len(functions) == 0 {
+						domainConstrain := domain.Constrain{Name: name}
+						domainPackage.Constrains = append(domainPackage.Constrains, domainConstrain)
+						break
+					}
+
 					domainInterface := domain.Interface{
 						Name:      name,
 						Functions: functions,
@@ -182,7 +191,8 @@ func ParseFile(filePath string) domain.Package {
 			}
 
 			for _, receiverClass := range functionDecl.Recv.List {
-				classField, err := exprToField("", receiverClass.Type)
+				classField, err :=
+					exprToField("", receiverClass.Type)
 				if err != nil {
 					log.Fatal(err)
 				}

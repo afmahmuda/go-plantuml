@@ -9,6 +9,7 @@ type (
 		Interfaces Interfaces
 		Classes    Classes
 		Functions  Functions
+		Constrains Constrains
 	}
 	Packages []Package
 )
@@ -21,6 +22,7 @@ func (domainPackage Package) Add(otherPackage Package) Package {
 		Constants:  append(domainPackage.Constants, otherPackage.Constants...),
 		Interfaces: append(domainPackage.Interfaces, otherPackage.Interfaces...),
 		Classes:    append(domainPackage.Classes, otherPackage.Classes...),
+		Constrains: append(domainPackage.Constrains, otherPackage.Constrains...),
 		Functions:  append(domainPackage.Functions, otherPackage.Functions...),
 	}
 }
@@ -36,6 +38,8 @@ func (domainPackage Package) IsEmpty() bool {
 		domainPackage.Classes,
 	) == 0 && len(
 		domainPackage.Functions,
+	) == 0 && len(
+		domainPackage.Constrains,
 	) == 0
 }
 

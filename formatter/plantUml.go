@@ -11,6 +11,8 @@ const PlantUMLInterfaceFormat = `interface %s{
 %s
 }`
 
+const PlantUMLConstrainsFormat = `interface %s{}`
+
 const PlantUMLPackageFormat = `package %s{
 %s
 }`
@@ -59,6 +61,21 @@ func FormatInterfaces(interfaces domain.Interfaces) string {
 		formattedInteraces = append(formattedInteraces, FormatInterface(domainInterface))
 	}
 	return strings.Join(formattedInteraces, "\n")
+}
+
+func FormatConstrain(constrain domain.Constrain) string {
+	return fmt.Sprintf(
+		PlantUMLConstrainsFormat,
+		constrain.Name,
+	)
+}
+
+func FormatConstrains(constrains domain.Constrains) string {
+	var formattedConstrains []string
+	for _, constrain := range constrains {
+		formattedConstrains = append(formattedConstrains, FormatConstrain(constrain))
+	}
+	return strings.Join(formattedConstrains, "\n")
 }
 
 func FormatParameter(parameter domain.Field) string {
@@ -130,6 +147,10 @@ func FormatPackage(domainPackage domain.Package) string {
 	if len(domainPackage.Interfaces) > 0 {
 		packageContent = append(packageContent, FormatInterfaces(domainPackage.Interfaces))
 
+	}
+
+	if len(domainPackage.Constrains) > 0 {
+		packageContent = append(packageContent, FormatConstrains(domainPackage.Constrains))
 	}
 
 	if len(domainPackage.Classes) > 0 {
